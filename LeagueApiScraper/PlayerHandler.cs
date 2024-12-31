@@ -67,7 +67,6 @@ namespace LeagueApiScraper
             {
 
                 List<GameInfo> currentGames = new List<GameInfo>();
-                List<string> gameIDs = new List<string>(); //----------
 
                 if (currentEndDate > 0 && currentEndDate <= Utility.ConvertToUnixTimestamp(startDate))
                 {
@@ -77,29 +76,21 @@ namespace LeagueApiScraper
                 if (currentEndDate == -1)
                 {
                     currentGames.AddRange(GetGames(queueType, 100, apiKey));
-                    //gameIDs.AddRange(GetGameIds(queueType, 100, apiKey)); //--------------
                 }
                 else
                 {
                     currentGames.AddRange(GetGames(startDate, Utility.ConvertFromUnixTimestamp(currentEndDate), queueType, 100, apiKey));
-                    //gameIDs.AddRange(GetGameIds(startDate, Utility.ConvertFromUnixTimestamp(currentEndDate), queueType, 100, apiKey)); //-----------------------
                 }
 
-                
-
-                //GameInfo earliest = ApiHandler.GetGame(gameIDs.Last(), apiKey); //---------------
-
-                if (currentGames.Count > 1) //????????????????
+                if (currentGames.Count > 1)
                 {
                     List<GameInfo> sortedGames = currentGames.OrderByDescending(game => game.info.gameEndTimestamp).ToList();
                     GameInfo earliestInList = sortedGames.Last();
-                    currentEndDate = (long)Math.Floor((double)earliestInList.info.gameEndTimestamp / 1000); //?????????????
-                    //allGameIds.AddRange(gameIDs); //-------------------------
+                    currentEndDate = (long)Math.Floor((double)earliestInList.info.gameEndTimestamp / 1000);
                     allGames.AddRange(sortedGames);
                 }
                 else
                 {
-                    //allGameIds.AddRange(gameIDs); //-------------------------
                     allGames.AddRange(currentGames);
                     break;
                 }
@@ -118,58 +109,7 @@ namespace LeagueApiScraper
 
             return allGames;
         }
-        /*public List<GameInfo> GetAllSrGamesSinceDate(DateTime startDate, string apiKey)
-        {
-            List<GameInfo> allGames = new List<GameInfo>();
-            long currentEndDate = -1;
-
-            while (true)
-            {
-
-                List<GameInfo> currentGames = new List<GameInfo>();
-
-                if (currentEndDate > 0 && currentEndDate <= Utility.ConvertToUnixTimestamp(startDate))
-                {
-                    break;
-                }
-
-                if (currentEndDate == -1)
-                {
-                    currentGames.AddRange(GetGames(400, 100, apiKey));
-                    currentGames.AddRange(GetGames(420, 100, apiKey));
-                    currentGames.AddRange(GetGames(440, 100, apiKey));
-                }
-                else
-                {
-                    currentGames.AddRange(GetGames(startDate, Utility.ConvertFromUnixTimestamp(currentEndDate), 400, 100, apiKey));
-                    currentGames.AddRange(GetGames(startDate, Utility.ConvertFromUnixTimestamp(currentEndDate), 420, 100, apiKey));
-                    currentGames.AddRange(GetGames(startDate, Utility.ConvertFromUnixTimestamp(currentEndDate), 440, 100, apiKey));
-                }
-
-                List<GameInfo> sortedGames = currentGames.OrderByDescending(game => game.info.gameEndTimestamp).ToList();
-                GameInfo earliestInList = sortedGames.Last();
-
-                if (currentGames.Count >= 100)
-                {
-                    currentEndDate = (long)Math.Floor((double)earliestInList.info.gameEndTimestamp / 1000);
-                    allGames.AddRange(sortedGames);
-                }
-                else if(currentGames.Count < 100 && currentGames.Count > 1)
-                {
-                    currentEndDate = (long)Math.Floor((double)earliestInList.info.gameEndTimestamp / 1000);
-                    allGames.AddRange(sortedGames);
-                    break;
-                }
-                else
-                {
-                    break;
-                }
-                
-            }
-
-            return allGames;
-        }*/
-
+       
         public List<GameInfo> GetRecentGames(int queueType, int numGames, string apiKey)
         {
             List<GameInfo> recentGames = new List<GameInfo>();

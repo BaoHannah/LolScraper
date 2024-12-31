@@ -17,7 +17,7 @@ namespace LeagueApiScraper
     public class Challenges
     {
         [JsonProperty("12AssistStreakCounts")]
-        public double AssistStreakCount { get; set; }
+        public double AssistStreakCount12 { get; set; }
         public double HealFromMapSources { get; set; }
         public double InfernalScalePickup { get; set; }
         public double SWARM_DefeatAatrox { get; set; }
@@ -82,7 +82,7 @@ namespace LeagueApiScraper
         public double killsOnRecentlyHealedByAramPack { get; set; }
         public double killsUnderOwnTurret { get; set; }
         public double killsWithHelpFromEpicMonster { get; set; }
-        public double knockEnemydoubleoTeamAndKill { get; set; }
+        public double knockEnemyIntoTeamAndKill { get; set; }
         public double landSkillShotsEarlyGame { get; set; }
         public double laneMinionsFirst10Minutes { get; set; }
         public double laningPhaseGoldExpAdvantage { get; set; }
@@ -92,7 +92,7 @@ namespace LeagueApiScraper
         public double maxCsAdvantageOnLaneOpponent { get; set; }
         public double maxKillDeficit { get; set; }
         public double maxLevelLeadLaneOpponent { get; set; }
-        public double mejaisFullStackdoubleime { get; set; }
+        public double mejaisFullStackInTime { get; set; }
         public double moreEnemyJungleThanOpponent { get; set; }
         public double multiKillOneSpell { get; set; }
         public double multiTurretRiftHeraldCount { get; set; }

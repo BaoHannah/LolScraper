@@ -17,38 +17,45 @@ namespace LeagueApiScraper
                 ("SperrysRLife1776", "8588"),
                 ("benslowcal", "1578"),
                 ("buschhh", "7715"),
-                ("sluggo", "8604")
-
+                ("sluggo", "8604"),
+                ("philmybean", "8588"),
+                ("TwixMixYA", "7882"),
+                ("SaladeDLL", "NA1"),
+                ("ThatsPr0", "NA1")
 
             };
 
+            CsvWriter writer = new CsvWriter();
             Dictionary<string, int> totalGames = new Dictionary<string, int>();
-            /*PlayerHandler q1 = new PlayerHandler("skrtskrt", "2433", "RGAPI-5d28caf7-6f5a-4177-94da-8d2ac1a8949d");
-            Console.WriteLine($"Player: {q1.accountInfo.gameName}#{q1.accountInfo.tagLine}");
-            DateTime target1 = new DateTime(2024, 1, 1);
-            List<GameInfo> allGames1 = q1.GetAllSrGamesFromStartDate(target1, q1.apiKey);
-            Console.WriteLine(allGames1.Count);
-            Participant max1 = StatHandler.GetMaxStats(allGames1, q1.accountInfo.puuid);
-            Participant min1 = StatHandler.GetMinStats(allGames1, q1.accountInfo.puuid);
-            CsvWriter writer1 = new CsvWriter();
-            writer1.WriteMinMaxStats(min1, max1, "skrtskrt");
-            Console.WriteLine("Done");*/
+            Dictionary<string, Participant> ccScores = new Dictionary<string, Participant>();
 
             foreach((string, string) player in players)
             {
-                PlayerHandler q = new PlayerHandler(player.Item1, player.Item2, "RGAPI-61cf561c-e4ae-46c2-aaa2-cd102c3c303c");
-                Console.WriteLine($"Player: {q.accountInfo.gameName}#{q.accountInfo.tagLine}");
+                PlayerHandler p = new PlayerHandler(player.Item1, player.Item2, "RGAPI-61cf561c-e4ae-46c2-aaa2-cd102c3c303c");
+                Console.WriteLine($"Player: {p.accountInfo.gameName}#{p.accountInfo.tagLine}");
                 DateTime target = new DateTime(2024, 1, 1);
-                List<GameInfo> allGames = q.GetAllSrGamesFromStartDate(target, q.apiKey);
+                List<GameInfo> allGames = p.GetAllSrGamesFromStartDate(target, p.apiKey);
                 Console.WriteLine(allGames.Count);
-                Participant maxStats = StatHandler.GetMaxStats(allGames, q.accountInfo.puuid);
-                Participant minStats = StatHandler.GetMinStats(allGames, q.accountInfo.puuid);
-                CsvWriter writer = new CsvWriter();
+
+                //Min Max Stats ---------------------------------------------------------------
+                Participant maxStats = StatHandler.GetMaxStats(allGames, p.accountInfo.puuid);
+                Participant minStats = StatHandler.GetMinStats(allGames, p.accountInfo.puuid);
                 writer.WriteMinMaxStats(minStats, maxStats, player.Item1);
+
+                //Total Stats -----------------------------------------------------------------
+                Participant totalStats = StatHandler.GetTotalStats(allGames, p.accountInfo.puuid);
+                writer.WriteTotalStats(totalStats, player.Item1);
+
+                //CC Score --------------------------------------------------------------------
+                Participant ccStats = StatHandler.GetCcScore(allGames, p.accountInfo.puuid);
+                ccScores.Add(player.Item1, ccStats);
+                
                 totalGames.Add(player.Item1, allGames.Count);
             }
 
-            foreach(string player in totalGames.Keys)
+            writer.WriteCcScore(ccScores, "");
+
+            foreach (string player in totalGames.Keys)
             {
                 Console.WriteLine($"{player}:{totalGames[player]}");
             }

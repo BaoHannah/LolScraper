@@ -95,11 +95,14 @@ namespace LeagueApiScraper
 
             foreach (GameInfo game in games)
             {
-                foreach (Participant player in game.info.participants)
+                if(game.info.gameDuration > 800)
                 {
-                    if (player.puuid == trackedPuuid)
+                    foreach (Participant player in game.info.participants)
                     {
-                        gamePerformances.Add(player);
+                        if (player.puuid == trackedPuuid)
+                        {
+                            gamePerformances.Add(player);
+                        }
                     }
                 }
             }
@@ -169,6 +172,131 @@ namespace LeagueApiScraper
             }
 
             return minStats;
+        }
+
+        public static Participant GetTotalStats(List<GameInfo> games, string trackedPuuid)
+        {
+            PropertyInfo[] props = typeof(Participant).GetProperties();
+            Participant totalStats = new Participant();
+            totalStats.challenges = new Challenges();
+            totalStats.puuid = trackedPuuid;
+
+            List<Participant> gamePerformances = new List<Participant>();
+
+            foreach (GameInfo game in games)
+            {
+                foreach (Participant player in game.info.participants)
+                {
+                    if (player.puuid == trackedPuuid)
+                    {
+                        gamePerformances.Add(player);
+                    }
+                }
+            }
+
+            foreach (Participant performance in gamePerformances)
+            {
+                foreach (PropertyInfo prop in props)
+                {
+                    if (prop.GetValue(performance) != null)
+                    {
+                        switch (prop.PropertyType)
+                        {
+                            case var type when type == typeof(int):
+                            case var type1 when type1 == typeof(int?):
+
+                                if(prop.GetValue(totalStats) != null)
+                                {
+                                    prop.SetValue(totalStats, (int)prop.GetValue(performance) + (int)prop.GetValue(totalStats));
+                                }
+                                else
+                                {
+                                    prop.SetValue(totalStats, prop.GetValue(performance));
+                                }
+                                
+                                break;
+
+                            case var type when type == typeof(double):
+                            case var type1 when type1 == typeof(double?):
+
+                                if (prop.GetValue(totalStats) != null)
+                                {
+                                    prop.SetValue(totalStats, (double)prop.GetValue(performance) + (double)prop.GetValue(totalStats));
+                                }
+                                else
+                                {
+                                    prop.SetValue(totalStats, prop.GetValue(performance));
+                                }
+                                break;
+
+                            case var type when type == typeof(Challenges):
+
+                                PropertyInfo[] challengeProps = typeof(Challenges).GetProperties();
+                                foreach (PropertyInfo challengeProp in challengeProps)
+                                {
+                                    switch (challengeProp.PropertyType)
+                                    {
+                                        case var c_type when c_type == typeof(double):
+                                        case var c_type1 when c_type1 == typeof(double?):
+
+                                            if (challengeProp.GetValue(performance.challenges) != null)
+                                            {
+                                                if (challengeProp.GetValue(totalStats.challenges) != null)
+                                                {
+                                                    challengeProp.SetValue(totalStats.challenges, (double)challengeProp.GetValue(performance.challenges) + (double)challengeProp.GetValue(totalStats.challenges));
+                                                }
+                                                else
+                                                {
+                                                    challengeProp.SetValue(totalStats.challenges, challengeProp.GetValue(performance.challenges));
+                                                }
+                                            }
+                                            break;
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return totalStats;
+        }
+
+        public static Participant GetCcScore(List<GameInfo> games, string trackedPuuid) //CC score when ignoring nocturne games
+        {
+            Participant maxStats = new Participant();
+            maxStats.challenges = new Challenges();
+            maxStats.puuid = trackedPuuid;
+
+            List<Participant> gamePerformances = new List<Participant>();
+
+            foreach (GameInfo game in games)
+            {
+                foreach (Participant player in game.info.participants)
+                {
+                    if (player.puuid == trackedPuuid)
+                    {
+                        gamePerformances.Add(player);
+                    }
+                }
+            }
+
+            foreach(Participant performance in gamePerformances)
+            {
+                if(performance.championName != "Nocturne")
+                {
+                    if(maxStats.timeCCingOthers == 0)
+                    {
+                        maxStats.timeCCingOthers = performance.timeCCingOthers;
+                    }
+                    else if(maxStats.timeCCingOthers < performance.timeCCingOthers)
+                    {
+                        maxStats.timeCCingOthers = performance.timeCCingOthers;
+                    }
+                }
+            }
+
+            return maxStats;
         }
     }
 
