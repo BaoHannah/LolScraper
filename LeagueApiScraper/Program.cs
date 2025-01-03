@@ -9,7 +9,7 @@ namespace LeagueApiScraper
         {
             List<(string, string)> players = new List<(string, string)>
             {
-                ("skrtskrt","2433"),
+/*                ("skrtskrt","2433"),
                 ("TheRealTrey","NA1"),
                 ("Quodge","NA1"),
                 ("metaknight", "8388"),
@@ -17,9 +17,8 @@ namespace LeagueApiScraper
                 ("SperrysRLife1776", "8588"),
                 ("benslowcal", "1578"),
                 ("buschhh", "7715"),
-                ("sluggo", "8604"),
+                ("sluggo", "8604"),*/
                 ("philmybean", "8588"),
-                ("TwixMixYA", "7882"),
                 ("SaladeDLL", "NA1"),
                 ("ThatsPr0", "NA1")
 
@@ -31,7 +30,7 @@ namespace LeagueApiScraper
 
             foreach((string, string) player in players)
             {
-                PlayerHandler p = new PlayerHandler(player.Item1, player.Item2, "RGAPI-61cf561c-e4ae-46c2-aaa2-cd102c3c303c");
+                PlayerHandler p = new PlayerHandler(player.Item1, player.Item2, "APIKEYHERE");
                 Console.WriteLine($"Player: {p.accountInfo.gameName}#{p.accountInfo.tagLine}");
                 DateTime target = new DateTime(2024, 1, 1);
                 List<GameInfo> allGames = p.GetAllSrGamesFromStartDate(target, p.apiKey);
